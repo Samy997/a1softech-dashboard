@@ -1,15 +1,111 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
+  private rememberData: boolean;
 
-  constructor() { }
+  loginForm: FormGroup;
+  register: boolean;
+  submitted: boolean;
+  error: string;
 
-  ngOnInit(): void {
+  constructor(private authService: AuthService, private route: ActivatedRoute) {
+    this.initForm();
+
+    this.route.queryParamMap.subscribe((qParams) => {
+      this.register = JSON.parse(qParams.get('register'));
+    });
   }
 
+  ngOnInit(): void {}
+
+  private initForm() {
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', Validators.required),
+    });
+  }
+
+  keepData(e: { checked: boolean }) {
+    if (e.checked) {
+      this.rememberData = true;
+    } else {
+      this.rememberData = false;
+    }
+  }
+
+  onSubmit() {
+    if (!this.register) {
+      return this.login();
+    } else {
+      this.registerUser();
+    }
+  }
+
+  private login() {
+    if (this.isFormValid) {
+      this.submitted = true;
+      this.authService.login(this.loginForm.value).subscribe(
+        (res) => {
+          this.authService.setToken(res['data'], this.rememberData);
+          this.submitted = false;
+        },
+        (err) => {
+          this.error = err.error.error;
+          this.submitted = false;
+          this.hideError();
+        }
+      );
+    }
+  }
+
+  private registerUser() {
+    if (this.isFormValid) {
+      this.submitted = true;
+      this.authService.register(this.loginForm.value).subscribe(
+        (res) => {
+          this.authService.setToken(res['data'], this.rememberData);
+          this.submitted = false;
+        },
+        (err) => {
+          this.error = err.error.error;
+          this.submitted = false;
+          this.hideError();
+        }
+      );
+    }
+  }
+
+  private hideError() {
+    setTimeout((_) => (this.error = null), 2000);
+  }
+
+  isFieldInvalid(fieldName) {
+    return (
+      this.loginForm.get(fieldName).invalid &&
+      this.loginForm.get(fieldName).touched
+    );
+  }
+
+  private get isFormValid() {
+    this.markAllFieldsAsTouched();
+    return this.loginForm.valid;
+  }
+
+  markAllFieldsAsTouched(formGroup = this.loginForm) {
+    Object.keys(formGroup.controls).forEach((key) => {
+      if (formGroup.controls[key] instanceof FormGroup) {
+        this.markAllFieldsAsTouched(formGroup.controls[key] as FormGroup);
+      } else if (formGroup.controls[key] instanceof FormControl) {
+        formGroup.controls[key].markAsTouched({ onlySelf: true });
+      }
+    });
+  }
 }

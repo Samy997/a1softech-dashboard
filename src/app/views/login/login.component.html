@@ -1,1 +1,105 @@
-<p>login works!</p>
+<div class="container-fluid bg">
+  <div class="overlay"></div>
+  <div class="holder">
+    <div class="card card--login">
+      <div class="card--header">
+        <img src="../../../assets/A1Logo.svg" alt="" class="img-fluid logo" />
+      </div>
+      <h1 class="card-title">{{ register ? "Register" : "Log in" }}</h1>
+      <div class="card-body">
+        <form
+          action="javascript:"
+          [formGroup]="loginForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="row">
+            <div class="col-10 mx-auto text-center">
+              <mat-form-field>
+                <span matPrefix><mat-icon>person</mat-icon> &nbsp;</span>
+                <input
+                  type="text"
+                  formControlName="email"
+                  matInput
+                  required
+                  placeholder="Email"
+                />
+                <mat-error *ngIf="isFieldInvalid('email')"
+                  >Email is required</mat-error
+                >
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-10 mx-auto text-center">
+              <mat-form-field>
+                <span matPrefix><mat-icon>lock</mat-icon> &nbsp;</span>
+                <input
+                  type="password"
+                  formControlName="password"
+                  matInput
+                  required
+                  placeholder="Password"
+                />
+                <mat-error *ngIf="isFieldInvalid('password')"
+                  >Password is required</mat-error
+                >
+              </mat-form-field>
+            </div>
+          </div>
+          <div *ngIf="!register" class="row">
+            <div class="col-10 mx-auto">
+              <mat-checkbox
+                (change)="keepData($event)"
+                style="color: #fff;"
+                class="mx-3"
+                >Remember Me</mat-checkbox
+              >
+            </div>
+          </div>
+          <div *ngIf="error" class="row">
+            <div class="col-12 text-center mb-2">
+              <span class="text-danger"> {{ error }} </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-10 mx-auto text-center">
+              <button
+                mat-raised-button
+                class="btn--border"
+                [disabled]="submitted"
+                type="submit"
+              >
+                <span *ngIf="!submitted">
+                  {{ register ? "Register" : "Login" }}
+                </span>
+                <span *ngIf="submitted">
+                  {{ register ? "Registering" : "Loging In" }}
+                </span>
+              </button>
+            </div>
+            <div *ngIf="!register" class="col-12 mt-3 text-center">
+              <a
+                href="javascript:"
+                [routerLink]="[]"
+                [queryParams]="{ register: true }"
+                >Not a member yet? Register</a
+              >
+            </div>
+            <div *ngIf="register" class="col-12 mt-3 text-center">
+              <a href="javascript:" [routerLink]="['/login']"
+                >Already a member? Log In</a
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="!register" class="card-footer">
+        <div class="row">
+          <div class="col-12 text-center">
+            <a href="javascript:">Forgot Password?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
