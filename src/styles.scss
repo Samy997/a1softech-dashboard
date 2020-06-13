@@ -9,3 +9,10 @@ a {
     color: white;
   }
 }
+
+.user-image {
+  border-radius: 20px;
+  -webkit-box-shadow: -10px 8px 5px 4px rgba(204, 204, 204, 1);
+  -moz-box-shadow: -10px 8px 5px 4px rgba(204, 204, 204, 1);
+  box-shadow: -10px 8px 5px 4px rgba(204, 204, 204, 1);
+}

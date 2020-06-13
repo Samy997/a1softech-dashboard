@@ -1,1 +1,12 @@
-<p>users-list works!</p>
+<div class="row mt-5">
+  <div class="col-4 my-5 mx-auto" *ngFor="let user of users">
+    <a href="javascript:" [routerLink]="['user/' + user.id]">
+      <img
+        [src]="user.avatar"
+        [alt]="user.first_name + user.last_name"
+        width="50%"
+        class="img-fluid user-image"
+      />
+    </a>
+  </div>
+</div>
