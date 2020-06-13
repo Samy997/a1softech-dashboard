@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,11 @@ export class LoginComponent implements OnInit {
   submitted: boolean;
   error: string;
 
-  constructor(private authService: AuthService, private route: ActivatedRoute) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.initForm();
 
     this.route.queryParamMap.subscribe((qParams) => {
@@ -54,8 +58,7 @@ export class LoginComponent implements OnInit {
       this.submitted = true;
       this.authService.login(this.loginForm.value).subscribe(
         (res) => {
-          this.authService.setToken(res['data'], this.rememberData);
-          this.submitted = false;
+          this.setTokenandNavigate(res);
         },
         (err) => {
           this.error = err.error.error;
@@ -71,8 +74,7 @@ export class LoginComponent implements OnInit {
       this.submitted = true;
       this.authService.register(this.loginForm.value).subscribe(
         (res) => {
-          this.authService.setToken(res['data'], this.rememberData);
-          this.submitted = false;
+          this.setTokenandNavigate(res);
         },
         (err) => {
           this.error = err.error.error;
@@ -80,6 +82,15 @@ export class LoginComponent implements OnInit {
           this.hideError();
         }
       );
+    }
+  }
+
+  private setTokenandNavigate(token: object) {
+    this.authService.setToken(token, this.rememberData);
+    if (this.authService.redirectUrl) {
+      this.router.navigate([this.authService.redirectUrl]);
+    } else {
+      this.router.navigate(['/dashboard']);
     }
   }
 

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
+  redirectUrl: string;
   userData;
   constructor(private http: HttpClient) {}
 
@@ -30,6 +31,6 @@ export class AuthService {
   }
 
   get Token() {
-    return JSON.parse(localStorage.getItem('userData'));
+    return this.userData || JSON.parse(localStorage.getItem('userData'));
   }
 }
