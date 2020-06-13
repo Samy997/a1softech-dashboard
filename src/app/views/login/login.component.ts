@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
       this.submitted = true;
       this.authService.register(this.loginForm.value).subscribe(
         (res) => {
+          this.rememberData = true;
           this.setTokenandNavigate(res);
         },
         (err) => {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -32,5 +33,10 @@ export class AuthService {
 
   get Token() {
     return this.userData || JSON.parse(localStorage.getItem('userData'));
+  }
+
+  logout() {
+    localStorage.removeItem('userData');
+    this.userData = null;
   }
 }
